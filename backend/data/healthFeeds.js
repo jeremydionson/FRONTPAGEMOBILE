@@ -64,5 +64,11 @@ module.exports = [
     subtopic: "Biology",
     source: "bioRXiv",
     feed_url: "https://connect.biorxiv.org/biorxiv_xml.php?subject=all"
+  },
+     {
+    topic: "Health",
+    subtopic: "General Health",
+    source: "NY Times",
+    feed_url: "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml"
   }
 ];
