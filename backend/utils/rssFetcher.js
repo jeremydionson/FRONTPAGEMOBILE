@@ -1,41 +1,45 @@
-const summarizeAndTag = require('./aiSummarizer');
+const axios = require('axios');
+const xml2js = require('xml2js');
+const Article = require('../models/article');
+const Video = require('../models/video');
 
-async function fetchAllFeeds() {
-  const feeds = await SubtopicFeed.getActiveFeeds();
+// Fetch a single RSS feed
+async function fetchRSS(feed) {
+  try {
+    const response = await axios.get(feed.feed_url);
+    const data = await xml2js.parseStringPromise(response.data, { mergeAttrs: true });
+    if (!data.rss || !data.rss.channel) return [];
 
-  for (const feed of feeds) {
-    const items = await fetchRSS(feed.feed_url);
+    return data.rss.channel[0].item.map(item => ({
+      title: item.title[0],
+      description: item.description ? item.description[0] : '',
+      url: item.link[0],
+      source: feed.source,
+      topic: feed.topic,
+      subtopic: feed.subtopic,
+      published_at: item.pubDate ? new Date(item.pubDate[0]) : new Date(),
+    }));
+  } catch (err) {
+    console.error(`RSS feed failed: ${feed.feed_url}`, err.message);
+    return [];
+  }
+}
+
+// Fetch multiple feeds from a feed list
+async function fetchAllFeeds(feedList) {
+  for (const feed of feedList) {
+    console.log(`Fetching feed: ${feed.feed_url}`);
+    const items = await fetchRSS(feed);
 
     for (const item of items) {
-      try {
-        const aiData = await summarizeAndTag(item.title, item.description || '');
-
-        if (feed.feed_url.includes('youtube.com')) {
-          await Video.create({
-            title: item.title,
-            url: item.url,
-            topic_id: feed.topic_id || null,
-            subtopic_id: feed.subtopic_id,
-            source: item.source,
-            published_at: item.published_at,
-            AI_summary: aiData.summary,
-            tags: aiData.tags
-          });
-        } else {
-          await Article.create({
-            title: item.title,
-            url: item.url,
-            topic_id: feed.topic_id || null,
-            subtopic_id: feed.subtopic_id,
-            source: item.source,
-            published_at: item.published_at,
-            AI_summary: aiData.summary,
-            tags: aiData.tags
-          });
-        }
-      } catch (err) {
-        console.error('⚠️ Failed to process item:', item.title, err.message);
+      // Example: if URL contains youtube, save as Video
+      if (feed.feed_url.includes('youtube.com')) {
+        await Video.create(item);
+      } else {
+        await Article.create(item);
       }
     }
   }
 }
+
+module.exports = { fetchRSS, fetchAllFeeds };
