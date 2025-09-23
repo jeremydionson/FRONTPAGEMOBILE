@@ -1,45 +1,68 @@
-const axios = require('axios');
-const xml2js = require('xml2js');
-const Article = require('../models/article');
-const Video = require('../models/video');
+// backend/utils/rssFetcher.js
+const axios = require("axios");
+const xml2js = require("xml2js");
+const admin = require("firebase-admin");
 
-// Fetch a single RSS feed
+const healthFeeds = require("../data/healthFeeds");
+const techFeeds = require("../data/techFeeds");
+const financeFeeds = require("../data/financeFeeds");
+const travelFeeds = require("../data/travelFeeds");
+const foodFeeds = require("../data/foodFeeds");
+const sportsFeeds = require("../data/sportsFeeds");
+const newsFeeds = require("../data/newsFeeds");
+
+const { mainTopics, subTopics } = require("../data/topicsChecklist");
+
+const feeds = [
+  ...healthFeeds,
+  ...techFeeds,
+  ...financeFeeds,
+  ...travelFeeds,
+  ...foodFeeds,
+  ...sportsFeeds,
+  ...newsFeeds
+];
+
+function getLevel(subtopic) {
+  if (mainTopics.includes(subtopic)) return 0; // main feed
+  if (subTopics.includes(subtopic)) return 1; // expand/niche feed
+  return 1; // default to subtopic if unknown
+}
+
 async function fetchRSS(feed) {
   try {
-    const response = await axios.get(feed.feed_url);
-    const data = await xml2js.parseStringPromise(response.data, { mergeAttrs: true });
-    if (!data.rss || !data.rss.channel) return [];
-
-    return data.rss.channel[0].item.map(item => ({
+    const { data } = await axios.get(feed.feed_url);
+    const parsed = await xml2js.parseStringPromise(data, { mergeAttrs: true });
+    const articles = parsed.rss.channel[0].item.map(item => ({
       title: item.title[0],
-      description: item.description ? item.description[0] : '',
-      url: item.link[0],
+      link: item.link[0],
+      pubDate: item.pubDate ? new Date(item.pubDate[0]) : new Date(),
       source: feed.source,
       topic: feed.topic,
       subtopic: feed.subtopic,
-      published_at: item.pubDate ? new Date(item.pubDate[0]) : new Date(),
+      level: getLevel(feed.subtopic)
     }));
-  } catch (err) {
-    console.error(`RSS feed failed: ${feed.feed_url}`, err.message);
+    return articles;
+  } catch (error) {
+    console.error("RSS feed failed:", feed.feed_url, error.message);
     return [];
   }
 }
 
-// Fetch multiple feeds from a feed list
-async function fetchAllFeeds(feedList) {
-  for (const feed of feedList) {
-    console.log(`Fetching feed: ${feed.feed_url}`);
-    const items = await fetchRSS(feed);
-
-    for (const item of items) {
-      // Example: if URL contains youtube, save as Video
-      if (feed.feed_url.includes('youtube.com')) {
-        await Video.create(item);
-      } else {
-        await Article.create(item);
-      }
+async function fetchAllFeeds() {
+  for (const feed of feeds) {
+    const articles = await fetchRSS(feed);
+    if (articles.length > 0) {
+      const db = admin.firestore();
+      const batch = db.batch();
+      articles.forEach(article => {
+        const docRef = db.collection("articles").doc();
+        batch.set(docRef, article);
+      });
+      await batch.commit();
+      console.log(`✅ Fetched and saved ${articles.length} articles from ${feed.source}`);
     }
   }
 }
 
-module.exports = { fetchRSS, fetchAllFeeds };
+module.exports = { fetchAllFeeds };

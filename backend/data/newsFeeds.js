@@ -1,14 +1,16 @@
 module.exports = [
   {
     topic: "News",
-    subtopic: "World",
+    subtopic: "General News",
     source: "NY Times",
     feed_url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+    level: 0
   },
   {
     topic: "News",
-    subtopic: "US",
+    subtopic: "General News",
     source: "NY Times",
     feed_url: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
-  },
+    level: 0
+  }
 ];
