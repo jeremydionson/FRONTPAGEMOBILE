@@ -34,6 +34,22 @@ app.use('/topic-selection', topicSelectionRoutes); // Select topics after signup
 app.use('/subtopic-selection', subtopicSelectionRoutes); // Select subtopics/niches
 app.use('/subscription', subscriptionRoutes);     // Save user subscriptions
 
+// Initialize Firebase Admin SDK
+const admin = require('firebase-admin');
+const serviceAccount = require('./config/serviceAccountKey.json'); // You'll need this file
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+}
+
+// Start the cron job
+require('./cron/fetchFeedsCron');
+
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log('📡 RSS feed cron job is now active');
+});
