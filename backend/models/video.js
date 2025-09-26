@@ -8,6 +8,11 @@ class Video {
     return { id: ref.id, ...video };
   }
 
+  static async getAll() {
+    const snapshot = await db.collection(COLLECTION).get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
   static async getByTopicsSubtopics(topics = [], subtopics = []) {
     let query = db.collection(COLLECTION);
     if (topics.length > 0) query = query.where('topic_id', 'in', topics);

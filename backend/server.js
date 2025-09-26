@@ -4,6 +4,7 @@ const cors = require('cors');
 // Import all routes
 const feedRoutes = require('./routes/feed');
 const watchfeedRoutes = require('./routes/watchfeed');
+const videosRoutes = require('./routes/videos');
 const expandRoutes = require('./routes/expand');
 const followRoutes = require('./routes/follow');
 const saveRoutes = require('./routes/save');
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/feed', feedRoutes);                       // Main feed (personalized)
 app.use('/watchfeed', watchfeedRoutes);            // Videos only
+app.use('/videos', videosRoutes);                  // Video content endpoint
 app.use('/expand', expandRoutes);                  // AI recommendations
 app.use('/follow', followRoutes);                  // Follow topics/subtopics
 app.use('/save', saveRoutes);                      // Save content

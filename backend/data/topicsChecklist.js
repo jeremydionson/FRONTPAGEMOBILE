@@ -7,7 +7,9 @@ module.exports = {
     "Travel",
     "Food",
     "Sports",
-    "News"
+    "News",
+    "Cars",
+    "Watches"
   ],
   subTopics: [
     "Gut Health",
@@ -24,7 +26,10 @@ module.exports = {
     "Retirement Planning",
     "Fintech",
     "Behavioral Finance",
-    "Small Business"
+    "Small Business",
+    "Electric Vehicles",
+    "General Cars",
+    "General Watches"
     // add more subtopics as needed
   ]
 };

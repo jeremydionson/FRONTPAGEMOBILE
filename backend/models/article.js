@@ -1,11 +1,16 @@
 const db = require('../config/firebase');
-const COLLECTION = 'Articles';
+const COLLECTION = 'articles';
 
 class Article {
   static async create(article) {
     const ref = db.collection(COLLECTION).doc();
     await ref.set(article);
     return { id: ref.id, ...article };
+  }
+
+  static async getAll() {
+    const snapshot = await db.collection(COLLECTION).get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
   static async getByTopicsSubtopics(topics = [], subtopics = []) {

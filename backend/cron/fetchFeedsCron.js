@@ -45,8 +45,10 @@ cron.schedule(cleanupSchedule, async () => {
   timezone: "America/New_York"
 });
 
-// Optional: Run initial feed fetch when server starts
+// Optional: Run initial feed fetch when server starts (non-blocking)
 console.log('🔄 Running initial feed fetch...');
-fetchAllFeeds()
-  .then(() => console.log('✅ Initial feed fetch completed!'))
-  .catch(err => console.error('❌ Initial feed fetch failed:', err.message));
+setImmediate(() => {
+  fetchAllFeeds()
+    .then(() => console.log('✅ Initial feed fetch completed!'))
+    .catch(err => console.error('❌ Initial feed fetch failed:', err.message));
+}); 

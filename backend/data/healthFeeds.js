@@ -1,4 +1,12 @@
 module.exports = [
+  // New Supplements Level 1 subtopic (parent for supplement feeds)
+  {
+    topic: "Health",
+    subtopic: "Supplements",
+    level: 1,
+    source: "PubMed", // Placeholder, no actual feed - just for organization
+    feed_url: "" // Empty - this is just a parent category
+  },
   {
     topic: "Health",
     subtopic: "General Health",
@@ -23,14 +31,16 @@ module.exports = [
   {
     topic: "Health",
     subtopic: "Dietary Supplements",
-    level: 1,
+    parent_subtopic: "Supplements",
+    level: 2, // Changed to Level 2 under Supplements
     source: "PubMed",
     feed_url: "https://pubmed.ncbi.nlm.nih.gov/rss/search/16Aw208Aj5vbB7vqv6hwx7yueKQW4U54j6hgbsW35dhSPFvIOR/?limit=15&utm_campaign=pubmed-2&fc=20250922134955"
   },
   {
     topic: "Health",
     subtopic: "Nutritional Supplements",
-    level: 1,
+    parent_subtopic: "Supplements",
+    level: 2, // Changed to Level 2 under Supplements
     source: "PubMed",
     feed_url: "https://pubmed.ncbi.nlm.nih.gov/rss/search/1hSsbZPB1F1yLEmfsOyemj0ktVGloTeL1geH3sa5gr6PS3SMcd/?limit=15&utm_campaign=pubmed-2&fc=20250922135036"
   },
@@ -90,5 +100,59 @@ module.exports = [
     level: 0,
     source: "NY Times",
     feed_url: "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml"
+  },
+
+  // New Level 2 niches under Mental Health
+  {
+    topic: "Health",
+    subtopic: "Anxiety & Stress",
+    parent_subtopic: "Mental Health",
+    level: 2,
+    source: "ADAA",
+    feed_url: "https://adaa.org/blog/rss.xml"
+  },
+  {
+    topic: "Health",
+    subtopic: "Depression Research",
+    parent_subtopic: "Mental Health",
+    level: 2,
+    source: "Wiley Online Library",
+    feed_url: "https://onlinelibrary.wiley.com/feed/10990801/most-recent"
+  },
+
+  // New Level 2 niches under Sleep Optimization
+  {
+    topic: "Health",
+    subtopic: "Sleep Disorders",
+    parent_subtopic: "Sleep Optimization",
+    level: 2,
+    source: "Sleep Education",
+    feed_url: "https://sleepeducation.org/feed"
+  },
+  {
+    topic: "Health",
+    subtopic: "Sleep Research",
+    parent_subtopic: "Sleep Optimization",
+    level: 2,
+    source: "Sleep Review Magazine",
+    feed_url: "https://sleepreviewmag.com/feed"
+  },
+
+  // New Level 2 niches under Gut Health (in addition to existing Psoriasis)
+  {
+    topic: "Health",
+    subtopic: "Microbiome Research",
+    parent_subtopic: "Gut Health",
+    level: 2,
+    source: "Nature",
+    feed_url: "https://www.nature.com/subjects/microbiome.rss"
+  },
+  {
+    topic: "Health",
+    subtopic: "Probiotics & Prebiotics",
+    parent_subtopic: "Gut Health",
+    level: 2,
+    source: "ISAPP Science",
+    feed_url: "https://isappscience.org/feed"
   }
 ];
