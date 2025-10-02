@@ -1,18 +1,19 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  SafeAreaView,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Image,
-  Alert,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import { router } from 'expo-router';
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -35,7 +36,11 @@ export default function SignIn() {
       <View style={styles.content}>
         {/* Logo/Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>FRONT PAGE</Text>
+          <Image
+            source={require('../assets/images/FRONT PAGE_Logo_Horizontal.svg')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>Your personalized news feed</Text>
         </View>
 
@@ -95,6 +100,11 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: 60,
+  },
+  logo: {
+    width: 300,
+    height: 120,
+    marginBottom: 8,
   },
   title: {
     fontSize: 32,

@@ -12,6 +12,24 @@ import {
 
 const { width } = Dimensions.get('window');
 
+// Helper function to safely render text content
+const renderTextContent = (content: any): string => {
+  if (typeof content === 'string') {
+    return content;
+  }
+  if (content && typeof content === 'object') {
+    // Handle objects with _ property (like {_, type})
+    if (content._ && typeof content._ === 'string') {
+      return content._;
+    }
+    // Handle objects with nested content
+    if (typeof content === 'object') {
+      return JSON.stringify(content);
+    }
+  }
+  return content?.toString() || '';
+};
+
 export default function MainFeed() {
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +89,7 @@ export default function MainFeed() {
             {/* Article Caption */}
             <View style={styles.captionContainer}>
               <Text style={styles.displayCaption}>
-                {article.displayCaption || article.description || article.AI_summary || article.title}
+                {renderTextContent(article.displayCaption || article.description || article.AI_summary || article.title)}
               </Text>
             </View>
           </View>

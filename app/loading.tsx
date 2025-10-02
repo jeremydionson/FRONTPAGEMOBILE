@@ -6,12 +6,14 @@ import {
   SafeAreaView,
   Animated,
   Dimensions,
+  Image,
 } from 'react-native';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
 export default function Loading() {
+  const router = useRouter();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [progressAnim] = useState(new Animated.Value(0));
   const [dotAnim1] = useState(new Animated.Value(0));
@@ -75,7 +77,11 @@ export default function Loading() {
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         {/* Loading Icon */}
         <View style={styles.iconContainer}>
-          <Text style={styles.icon}>📰</Text>
+          <Image
+            source={require('../assets/images/FRONT PAGE_Logo_Horizontal.svg')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Main Message */}
@@ -180,9 +186,9 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginBottom: 32,
   },
-  icon: {
-    fontSize: 64,
-    textAlign: 'center',
+  logo: {
+    width: 200,
+    height: 80,
   },
   title: {
     fontSize: 24,
